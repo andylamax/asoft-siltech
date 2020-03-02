@@ -5,6 +5,7 @@ buildscript {
         test_version = "4.0.0"
         comms_version = "1.0.0"
         ktor_version = "1.3.0"
+        asoft_sms_gateway_version = "1.0.0"
         android_build_tools_version = "3.5.2"
     }
 
@@ -16,6 +17,7 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$android_build_tools_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
     }
 }
 
@@ -30,10 +32,11 @@ tasks.whenTaskAdded { task ->
 }
 
 group 'tz.co.asoft'
-version '1.0.0'
+version '2.0.0'
 
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
+apply plugin: "kotlinx-serialization"
 
 android {
     compileSdkVersion 28
@@ -90,8 +93,6 @@ kotlin {
     }
 
     js() {
-//        browser()
-//        nodejs()
         compilations.all {
             tasks[compileKotlinTaskName].kotlinOptions {
                 kotlinOptions.metaInfo = true
@@ -107,6 +108,7 @@ kotlin {
             dependencies {
                 implementation kotlin('stdlib-common')
                 api "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version"
+                api "com.github.andylamax.asoft-sms-gateway:asoft-sms-gateway-metadata:$asoft_sms_gateway_version"
                 api "com.github.andylamax.asoft-comms:asoft-comms-metadata:$comms_version"
                 api("io.ktor:ktor-client-core:$ktor_version")
             }
@@ -118,26 +120,12 @@ kotlin {
             }
         }
 
-        jvmMain {
-            dependencies {
-                implementation kotlin('stdlib')
-                api "io.ktor:ktor-client-cio:$ktor_version"
-                api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-                api "com.github.andylamax.asoft-comms:asoft-comms-jvm:$comms_version"
-            }
-        }
-
-        jvmTest {
-            dependencies {
-                implementation "com.github.andylamax.asoft-test:asoft-test-jvm:$test_version"
-            }
-        }
-
         androidMain {
             dependencies {
                 implementation kotlin('stdlib')
                 api "io.ktor:ktor-client-android:$ktor_version"
                 api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+                api "com.github.andylamax.asoft-sms-gateway:asoft-sms-gateway-android:$asoft_sms_gateway_version"
                 api "com.github.andylamax.asoft-comms:asoft-comms-android:$comms_version"
             }
         }
@@ -148,11 +136,28 @@ kotlin {
             }
         }
 
+        jvmMain {
+            dependencies {
+                implementation kotlin('stdlib')
+                api "io.ktor:ktor-client-cio:$ktor_version"
+                api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+                api "com.github.andylamax.asoft-sms-gateway:asoft-sms-gateway-jvm:$asoft_sms_gateway_version"
+                api "com.github.andylamax.asoft-comms:asoft-comms-jvm:$comms_version"
+            }
+        }
+
+        jvmTest {
+            dependencies {
+                implementation "com.github.andylamax.asoft-test:asoft-test-jvm:$test_version"
+            }
+        }
+
         jsMain {
             dependencies {
                 implementation kotlin('stdlib-js')
                 api "io.ktor:ktor-client-js:$ktor_version"
                 api "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$coroutines_version"
+                api "com.github.andylamax.asoft-sms-gateway:asoft-sms-gateway-js:$asoft_sms_gateway_version"
                 api "com.github.andylamax.asoft-comms:asoft-comms-js:$comms_version"
             }
         }
